@@ -1,7 +1,3 @@
-/* rls.c -	リモートディレクトリ表示サービスのクライアント
- * 					使い方：rls <ホスト名> <ディレクトリ>
- */
-
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
