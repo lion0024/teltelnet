@@ -73,7 +73,6 @@ int main(int ac, char *av[])
 		
 		if (fgets(dirname, BUFSIZ-5, sock_fpi) == NULL)
 			oops("reading dirname");
-/*	sanitize(dirname);*/
 		
 		/* 書き込み方向をストリームとしてオープン	*/
 		if ((sock_fpo = fdopen(sock_fd, "w")) == NULL)
@@ -91,21 +90,3 @@ int main(int ac, char *av[])
 		fclose(sock_fpi);
 	}
 }
-
-int sanitize(char *str)
-/*
- * 誰かが"; rm *"のようなディレクトリ名を送ってきたときに、
- * 素直に"ls ; rm *"というコマンドを作るのでは非常にまずい
- *
- * そこで、スラッシュと英数字以外の全ての文字を取り除く
- * もっと良い方法がある。練習問題を参照のこと
- */
-{
-	char	*src, *dest;
-
-	for (src = dest = str; *src; src++)
-		if (*src == '/' || isalnum(*src))
-			*dest++ = *src;
-	*dest = '\0';
-}
-
