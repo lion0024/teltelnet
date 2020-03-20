@@ -1,6 +1,3 @@
-/* rlsd.c -	リモートlsサーバ~若干偏執的
- */
-
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
