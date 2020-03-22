@@ -82,7 +82,7 @@ int main(int ac, char *av[])
 		if ((pipe_fp = popen(command, "r")) == NULL)
 			oops("popen");
 			
-		/* lsからソケットにデータを転送	*/
+		/* 結果をソケットにデータを転送	*/
 		while ((c = getc(pipe_fp)) != EOF)
 			putc(c, sock_fpo);	
 		pclose(pipe_fp);
