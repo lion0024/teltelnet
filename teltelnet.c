@@ -1,10 +1,4 @@
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <string.h>
-#include <stdlib.h>
+#include "net_service.h"
 
 #define oops(msg)	{ perror(msg); exit(1); }
 #define PORTNUM		15000
