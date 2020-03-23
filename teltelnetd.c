@@ -29,8 +29,9 @@ int main(int ac, char *av[])
 	 */
  
 	sock_id = socket(PF_INET, SOCK_STREAM, 0);  /* ソケットを取得する           */
-	if ( sock_id == -1)
+	if ( sock_id == -1){
 		oops("socket");
+	}
 
 	/*
 	 * ステップ2：ソケットにアドレスをバインドする
@@ -46,15 +47,17 @@ int main(int ac, char *av[])
 	saddr.sin_port = htons(PORTNUM);          /* ソケットポートを設定           */
 	saddr.sin_family = AF_INET;               /* アドレスファミリを設定         */
 	
-	if (bind(sock_id, (struct sockaddr *)&saddr, sizeof(saddr)) != 0)
+	if (bind(sock_id, (struct sockaddr *)&saddr, sizeof(saddr)) != 0){
 		oops("bind");
+	}
 
 	/*
 	 * ステップ3：キューサイズを1としてソケットを着信できる状態にする
 	 */
 
-	if (listen(sock_id, 1) != 0)
+	if (listen(sock_id, 1) != 0){
 		oops("listen");
+	}
 
 	/*
 	 * メインループ：accept(),write(),close()
@@ -63,28 +66,32 @@ int main(int ac, char *av[])
 	while (1){
 		sock_fd = accept(sock_id, NULL, NULL);  /* 着信を待つ                     */
 		printf("Wow! got a call!\n");
-		if (sock_fd == -1)
+		if (sock_fd == -1){
 			oops("accept");
+		}
 
 
 		/* 読み出し方向をストリームとしてオープン	*/
-		if ((sock_fpi = fdopen(sock_fd, "r")) == NULL)
+		if ((sock_fpi = fdopen(sock_fd, "r")) == NULL){
 			oops("fdopen reading");
-		
-		if (fgets(dirname, BUFSIZ-5, sock_fpi) == NULL)
+		}
+		if (fgets(dirname, BUFSIZ-5, sock_fpi) == NULL){
 			oops("reading dirname");
-		
+		}
 		/* 書き込み方向をストリームとしてオープン	*/
-		if ((sock_fpo = fdopen(sock_fd, "w")) == NULL)
+		if ((sock_fpo = fdopen(sock_fd, "w")) == NULL){
 			oops("popen");
+		}
 
 		sprintf(command, "%s\0", dirname);
-		if ((pipe_fp = popen(command, "r")) == NULL)
+		if ((pipe_fp = popen(command, "r")) == NULL){
 			oops("popen");
+		}
 			
 		/* 結果をソケットにデータを転送	*/
-		while ((c = getc(pipe_fp)) != EOF)
+		while ((c = getc(pipe_fp)) != EOF){
 			putc(c, sock_fpo);	
+		}
 		pclose(pipe_fp);
 		fclose(sock_fpo);
 		fclose(sock_fpi);

@@ -30,8 +30,9 @@ int main(int ac, char *av[])
 	 */
 
 	sock_id = socket(AF_INET, SOCK_STREAM, 0);		/* 回線を取得する								*/
-	if ( sock_id == -1)
+	if ( sock_id == -1){
 		oops("socket");															/* 失敗													*/
+	}
 
 	/* 
 	 * ステップ2：サーバに接続する
@@ -39,14 +40,16 @@ int main(int ac, char *av[])
 
 	bzero(&servadd, sizeof(servadd));							/* アドレスを0クリアする				*/
 	hp = gethostbyname(av[1]);										/* ホストのIPアドレスを照合する	*/
-	if (hp == NULL)
+	if (hp == NULL){
 		oops(av[1]);																/* 失敗													*/
+	}
 	bcopy(hp->h_addr, (struct sockaddr *)&servadd.sin_addr, hp->h_length);
 	servadd.sin_port = htons(PORTNUM);						/* ポート番号を設定							*/
 	servadd.sin_family = AF_INET;									/* ソケットタイプを設定する			*/
 
-	if (connect(sock_id, (struct sockaddr *)&servadd, sizeof(servadd)) != 0)
+	if (connect(sock_id, (struct sockaddr *)&servadd, sizeof(servadd)) != 0){
 		oops("connect");
+	}
 
 	/*
 	 * ステップ3：ディレクトリ名を送り、結果を読み出す
@@ -56,19 +59,22 @@ int main(int ac, char *av[])
 	while (numargs < MAXARGS)
 	{
 		printf("Arg[%d]? ", numargs);
-		if (fgets(argbuf, ARGLEN, stdin) && *argbuf != '\n')
+		if (fgets(argbuf, ARGLEN, stdin) && *argbuf != '\n'){
 			arglist[numargs++] = makestring(argbuf);
-		else
-		{
+		} else {
 			if(numargs > 0){
 				arglist[numargs] = NULL;
-				if (write(sock_id, arglist[0], strlen(arglist[0])) == -1)
+				if (write(sock_id, arglist[0], strlen(arglist[0])) == -1){
 					oops("write");
-				if (write(sock_id, "\n", 1) == -1)
+				}
+				if (write(sock_id, "\n", 1) == -1){
 					oops("write");
-				while ((n_read = read(sock_id, buffer, BUFSIZ)) > 0)
-					if (write(1, buffer, n_read) == -1)
+				}
+				while ((n_read = read(sock_id, buffer, BUFSIZ)) > 0){
+					if (write(1, buffer, n_read) == -1){
 						oops("write");
+					}
+				}
 				close(sock_id);
 			}
 		}
