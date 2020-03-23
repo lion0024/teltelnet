@@ -1,7 +1,5 @@
 #include "net_service.h"
 
-#define oops(msg)	{ perror(msg); exit(1); }
-#define PORTNUM		15000
 #define MAXARGS   20
 #define ARGLEN    100
 
@@ -88,6 +86,7 @@ char *makestring(char *buf)
 	cp = malloc(strlen(buf)+1);           /* メモリを確保       */
 	if (cp == NULL){                      /* 失敗したら終了     */
 		fprintf(stderr, "no memory\n");
+		close(sock_id);
 		exit(1);
 	}
 	strcpy(cp, buf);                      /* 文字をコピーする   */

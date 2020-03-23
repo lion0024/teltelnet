@@ -1,8 +1,6 @@
 #include "net_service.h"
 
-#define PORTNUM		15000												/* リモートサーバのポート				*/
 #define HOSTLEN		256
-#define oops(msg)	{ perror(msg); exit(1); }
 
 int main(int ac, char *av[])
 {
