@@ -11,4 +11,7 @@
 	#include <stdlib.h>
 	#include <unistd.h>
 	#include <time.h>
+	
+	#define PORTNUM   15000                       /* リモートサーバのポート       */
+	#define oops(msg) { perror(msg); exit(1); }  
 #endif
