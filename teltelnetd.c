@@ -1,12 +1,11 @@
 #include "net_service.h"
 
-#define HOSTLEN		256
-
 int main(int ac, char *av[])
 {
 	struct  sockaddr_in   saddr;                /* ここにアドレスを構築する       	*/
 	struct  hostent       *hp;                  /* アドレスの一部                 	*/
-	char		hostname[HOSTLEN];									/* 回線ID、ファイルデスクリプタ			*/
+	size_t	hostlen;
+	char		hostname[hostlen];									/* 回線ID、ファイルデスクリプタ			*/
 	int     sock_id, sock_fd;                   /* 入出力のためのストリーム       	*/
 	FILE		*sock_fpi, *sock_fpo;								/* popenを使ってコマンドを実行する	*/
 	FILE		*pipe_fp;														/* クライアントから送られてくる			*/
@@ -29,7 +28,7 @@ int main(int ac, char *av[])
 	 */
 
 	bzero((void *)&saddr, sizeof(saddr));     /* 構造体をクリアする         	    */
-	gethostname(hostname, HOSTLEN);           /* 私はどこ?                  	    */
+	gethostname(hostname, hostlen);           /* 私はどこ?                  	    */
 	hp = gethostbyname(hostname);             /* ホスト情報を取得する         	  */
   
 	                                          /* ホスト情報を設定									*/
