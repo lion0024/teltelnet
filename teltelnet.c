@@ -23,7 +23,7 @@ int main(int ac, char *av[])
 
 	sock_id = socket(AF_INET, SOCK_STREAM, 0);		/* 回線を取得する								*/
 	if ( sock_id == -1){
-		oops("socket");															/* 失敗													*/
+		oops("socket", errno, -1);															/* 失敗													*/
 	}
 
 	/* 
@@ -33,14 +33,14 @@ int main(int ac, char *av[])
 	bzero(&servadd, sizeof(servadd));							/* アドレスを0クリアする				*/
 	hp = gethostbyname(av[1]);										/* ホストのIPアドレスを照合する	*/
 	if (hp == NULL){
-		oops(av[1]);																/* 失敗													*/
+		oops(av[1], h_errno, -1) ;																/* 失敗													*/
 	}
 	bcopy(hp->h_addr, (struct sockaddr *)&servadd.sin_addr, hp->h_length);
 	servadd.sin_port = htons(PORTNUM);						/* ポート番号を設定							*/
 	servadd.sin_family = AF_INET;									/* ソケットタイプを設定する			*/
 
 	if (connect(sock_id, (struct sockaddr *)&servadd, sizeof(servadd)) != 0){
-		oops("connect");
+		oops("connect", errno, -1);
 	}
 
 	/*
@@ -57,14 +57,14 @@ int main(int ac, char *av[])
 			if(numargs > 0){
 				arglist[numargs] = NULL;
 				if (write(sock_id, arglist[0], strlen(arglist[0])) == -1){
-					oops("write");
+					oops("write", errno, -1);
 				}
 				if (write(sock_id, "\n", 1) == -1){
-					oops("write");
+					oops("write", errno, -1);
 				}
 				while ((n_read = read(sock_id, buffer, BUFSIZ)) > 0){
 					if (write(1, buffer, n_read) == -1){
-						oops("write");
+						oops("write", errno, -1);
 					}
 				}
 				close(sock_id);
@@ -85,8 +85,7 @@ char *makestring(char *buf)
 	buf[strlen(buf)-1] = '\0';            /* 改行を削除         */
 	cp = malloc(strlen(buf)+1);           /* メモリを確保       */
 	if (cp == NULL){                      /* 失敗したら終了     */
-		fprintf(stderr, "no memory\n");
-		close(sock_id);
+		oops("no memory", errno, NULL);
 		exit(1);
 	}
 	strcpy(cp, buf);                      /* 文字をコピーする   */

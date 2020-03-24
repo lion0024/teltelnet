@@ -11,7 +11,10 @@
 	#include <stdlib.h>
 	#include <unistd.h>
 	#include <time.h>
+	#include <errno.h>
 	
 	#define PORTNUM   15000                       /* リモートサーバのポート       */
-	#define oops(msg) { perror(msg); exit(1); }  
+	#define oops(msg, errcode, status)\
+		{ fprintf(stderr, "[ERROR] %s faild. errcode:%d status:%d\n",\
+		 msg, errcode, status); exit(1); }
 #endif
