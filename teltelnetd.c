@@ -48,18 +48,15 @@ int main(int ac, char *av[])
 		oops("listen", errno, -1);
 	}
 
+	sock_fd = accept(sock_id, NULL, NULL);  /* 着信を待つ                     */
+	if (sock_fd == -1){
+		oops("accept", errno, -1);
+	}
 	/*
 	 * メインループ：accept(),write(),close()
 	 */
 
 	while (1){
-		sock_fd = accept(sock_id, NULL, NULL);  /* 着信を待つ                     */
-		printf("Wow! got a call!\n");
-		if (sock_fd == -1){
-			oops("accept", errno, -1);
-		}
-
-
 		/* 読み出し方向をストリームとしてオープン	*/
 		if ((sock_fpi = fdopen(sock_fd, "r")) == NULL){
 			oops("fdopen reading", errno, NULL);
