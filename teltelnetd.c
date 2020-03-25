@@ -52,21 +52,24 @@ int main(int ac, char *av[])
 	if (sock_fd == -1){
 		oops("accept", errno, -1);
 	}
+	
+	/* 読み出し方向をストリームとしてオープン	*/
+	if ((sock_fpi = fdopen(sock_fd, "r")) == NULL){
+		oops("fdopen reading", errno, NULL);
+	}
+	
+	/* 書き込み方向をストリームとしてオープン	*/
+	if ((sock_fpo = fdopen(sock_fd, "w")) == NULL){
+		oops("popen", errno, NULL);
+	}
+	
 	/*
-	 * メインループ：accept(),write(),close()
+	 * メインループ：write(),close()
 	 */
 
 	while (1){
-		/* 読み出し方向をストリームとしてオープン	*/
-		if ((sock_fpi = fdopen(sock_fd, "r")) == NULL){
-			oops("fdopen reading", errno, NULL);
-		}
 		if (fgets(dirname, BUFSIZ-5, sock_fpi) == NULL){
 			oops("reading dirname", errno, NULL);
-		}
-		/* 書き込み方向をストリームとしてオープン	*/
-		if ((sock_fpo = fdopen(sock_fd, "w")) == NULL){
-			oops("popen", errno, NULL);
 		}
 
 		sprintf(command, "%s\0", dirname);
