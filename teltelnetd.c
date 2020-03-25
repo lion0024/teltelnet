@@ -37,7 +37,11 @@ int main(int ac, char *av[])
 	saddr.sin_family = AF_INET;               /* アドレスファミリを設定         	*/
 	
 	if (bind(sock_id, (struct sockaddr *)&saddr, sizeof(saddr)) != 0){
-		oops("bind", errno, -1);
+		if (errno == EADDRINUSE){
+			oops("アドレスはすでに使用されています", errno, -1);
+		} else {
+			oops("bind faild.", errno, -1);
+		}
 	}
 
 	/*
@@ -45,22 +49,22 @@ int main(int ac, char *av[])
 	 */
 
 	if (listen(sock_id, 1) != 0){
-		oops("listen", errno, -1);
+		oops("listen faild.", errno, -1);
 	}
 
 	sock_fd = accept(sock_id, NULL, NULL);  /* 着信を待つ                     */
 	if (sock_fd == -1){
-		oops("accept", errno, -1);
+		oops("accept faild.", errno, -1);
 	}
 	
 	/* 読み出し方向をストリームとしてオープン	*/
 	if ((sock_fpi = fdopen(sock_fd, "r")) == NULL){
-		oops("fdopen reading", errno, NULL);
+		oops("fdopen reading faild.", errno, NULL);
 	}
 	
 	/* 書き込み方向をストリームとしてオープン	*/
 	if ((sock_fpo = fdopen(sock_fd, "w")) == NULL){
-		oops("popen", errno, NULL);
+		oops("popen faild.", errno, NULL);
 	}
 	
 	/*
@@ -69,12 +73,11 @@ int main(int ac, char *av[])
 
 	while (1){
 		if (fgets(dirname, BUFSIZ-5, sock_fpi) == NULL){
-			oops("reading dirname", errno, NULL);
+			oops("reading dirname faild.", errno, NULL);
 		}
-
-		sprintf(command, "%s\0", dirname);
+		sprintf(command, "%s", dirname);
 		if ((pipe_fp = popen(command, "r")) == NULL){
-			oops("popen", errno, NULL);
+			oops("popen faild.", errno, NULL);
 		}
 			
 		/* 結果をソケットにデータを転送	*/
