@@ -15,6 +15,6 @@
 	
 	#define PORTNUM   15000                       /* リモートサーバのポート       */
 	#define oops(msg, errcode, status)\
-		{ fprintf(stderr, "[ERROR] %s faild. errcode:%d status:%d\n",\
+		{ fprintf(stderr, "[ERROR] %s errcode:%d status:%d\n",\
 		 msg, errcode, status); exit(1); }
 #endif
